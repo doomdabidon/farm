@@ -1,7 +1,6 @@
-
 # 📅 Course Plan (4 Weeks)
 
-- **3 Lectures + 1 Homework per week**
+- **3 Lectures + 3 Homework per week**
 - **Live Review Sessions** to go over homework (not focused on code quality but concept understanding)
 - **Project-Based Learning**: Students will progressively build a simple backend application
 
