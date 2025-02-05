@@ -2,5 +2,11 @@
   "name": "farm",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "runLowStackMemory": "node --stack-size=128 stackOverFlowExample.js",
+    "runHighStackMemory": "node --stack-size=4096 stackOverFlowExample.js",
+    "runWithCommands": "node commandExample.js -param1 1 -param2 2",
+    "runEventLoop": "node eventLoopExample.js"
+  }
 }
