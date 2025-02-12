@@ -1,0 +1,17 @@
+{
+  "name": "home-tasks",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node task1/index.js 12",
+    "task2-create-file": "node task2/index.js -o kruto",
+    "task2-print-file": "node task2/index.js -i kruto.txt"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@faker-js/faker": "9.4.0",
+    "@types/node": "^22.13.1"
+  }
+}
