@@ -1,0 +1,16 @@
+{
+  "name": "aboba",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "write": "node homework.js -o=aboba.txt",
+    "read": "node homework.js -i=homework.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@faker-js/faker": "^9.5.0",
+    "args-parser": "^1.3.0"
+  }
+}
