@@ -4,7 +4,9 @@
     "main": "index.js",
     "scripts": {
         "homework_1": "node fibonacciArguments.js 12",
-        "homework_2": "node stream.js"
+        "homework_2": "node stream.js",
+        "homework_3_1": "node hw3_1/main.js",
+        "homework_3_2": "node hw3_2/main.js"
     },
     "author": "rkarabanov",
     "license": "ISC",
