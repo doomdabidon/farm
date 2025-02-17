@@ -4,10 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "runBuffer": "node lesson2/bufferExample.js",
-    "runSync": "node lesson2/readWriteSyncFile.js",
-    "runAsync": "node lesson2/readWriteSyncFileAsync.js",
-    "runStream": "node lesson2/readWriteSyncFileStream.js"
+    "fork": "node lesson3/processFork.js",
+    "spawn": "node lesson3/processSpawn.js",
+    "exec": "node lesson3/processExec.js",
+    "execFile": "node lesson3/processExecFile.js",
+    "thread": "node lesson3/threadService.js",
+    "cluster": "node lesson3/cluster.js"
   },
   "dependencies": {
     "csv-parser": "^3.2.0"
