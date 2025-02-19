@@ -1,0 +1,56 @@
+{
+    "info": {
+        "_postman_id": "example-id",
+        "name": "Express API Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get All Users (Secured)",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer valid-token-1" }],
+                "url": { "raw": "http://127.0.0.1:5000/secured/users", "host": ["127.0.0.1"], "port": "5000", "path": ["secured", "users"] }
+            }
+        },
+        {
+            "name": "Get All Users",
+            "request": {
+                "method": "GET",
+                "url": { "raw": "http://127.0.0.1:5000/users", "host": ["127.0.0.1"], "port": "5000", "path": ["users"] }
+            }
+        },
+        {
+            "name": "Get User by ID",
+            "request": {
+                "method": "GET",
+                "url": { "raw": "http://127.0.0.1:5000/users/:id", "host": ["127.0.0.1"], "port": "5000", "path": ["users", ":id"] }
+            }
+        },
+        {
+            "name": "Create User",
+            "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{ \"user\": { \"name\": \"John Doe\", \"age\": 30 } }" },
+                "url": { "raw": "http://127.0.0.1:5000/users", "host": ["127.0.0.1"], "port": "5000", "path": ["users"] }
+            }
+        },
+        {
+            "name": "Delete User",
+            "request": {
+                "method": "DELETE",
+                "url": { "raw": "http://127.0.0.1:5000/users/:id", "host": ["127.0.0.1"], "port": "5000", "path": ["users", ":id"] }
+            }
+        },
+        {
+            "name": "Update User",
+            "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{ \"name\": \"Updated Name\", \"age\": 25 }" },
+                "url": { "raw": "http://127.0.0.1:5000/users/:id", "host": ["127.0.0.1"], "port": "5000", "path": ["users", ":id"] }
+            }
+        }
+    ]
+}
