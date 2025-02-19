@@ -11,9 +11,11 @@
     "serverREST": "node lesson4/serverREST.js"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.5.0",
     "body-parser": "^1.20.3",
     "csv-parser": "^3.2.0",
     "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
     "save": "^2.9.0"
   },
   "devDependencies": {
