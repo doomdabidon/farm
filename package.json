@@ -4,17 +4,19 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "server-dev": "nodemon lesson4/server1.js",
-    "server1": "node lesson4/server1.js",
-    "server2": "node lesson4/server2.js",
-    "serverFiles": "node lesson4/serverFiles.js",
-    "serverREST": "node lesson4/serverREST.js"
+    "serverREST": "nodemon lesson5/serverREST.js"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
     "csv-parser": "^3.2.0",
     "express": "^4.21.2",
-    "save": "^2.9.0"
+    "express-oas-generator": "^1.0.46",
+    "morgan": "^1.10.0",
+    "save": "^2.9.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
