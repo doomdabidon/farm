@@ -1,0 +1,15 @@
+{
+    "name": "home-tasks",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "homework_1": "node fibonacciArguments.js 12",
+        "homework_2": "node stream.js"
+    },
+    "author": "rkarabanov",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@faker-js/faker": "^9.4.0"
+    }
+}
