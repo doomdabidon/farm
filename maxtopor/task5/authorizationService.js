@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 
+const availableRoles = ["USER", "ADMIN"]
+
 const users = [
     {
         username: "maxtopor",
@@ -32,6 +34,25 @@ async function authorize(username, password) {
     }
 }
 
+async function register(username, password) {
+    if (users.find(user => user.username === username)) {
+        throw Error("User with such name already registered")
+    }
+
+    const user = {
+        username: username,
+        password: await bcrypt.hash(password, 10),
+        roles: availableRoles[Math.floor((Math.random() * availableRoles.length))]
+    }
+
+    users.push(user)
+
+    return {
+        username: user.username,
+        roles: user.roles
+    }
+}
+
 class AuthorizationError extends Error {
     constructor(message) {
         super(message)
@@ -41,5 +62,6 @@ class AuthorizationError extends Error {
 
 module.exports = {
     authorize,
+    register,
     AuthorizationError
 }

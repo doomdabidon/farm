@@ -15,6 +15,14 @@ usersRouter.get("/authenticate", async (req, res, next) => {
     res.json({ token: jwt })
 })
 
+usersRouter.post("/register", async (req, res, next) => {
+    const { username, password } = req.body
+    const authorization = await authService.register(username, password)
+    const jwt = jwtUtils.generateJwt(authorization.username, authorization.roles)
+
+    res.json({ token: jwt })
+})
+
 usersRouter.use(errorHandler)
 
 module.exports = {

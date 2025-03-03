@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const SECRET_KEY = "vnYwV4ULtYFeKRiYNvg54E68D0vLZgFq7QTOAoodpII="
 
 function generateJwt(username, roles) {
-    const token = jwt.sign({ username: username, roles: roles }, SECRET_KEY)
+    const token = jwt.sign({ username: username, roles: roles }, SECRET_KEY, { expiresIn: "1h" })
 
     return token
 }
