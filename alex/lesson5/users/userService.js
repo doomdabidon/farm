@@ -29,4 +29,17 @@ function deleteUser(id) {
     userRepository.writeAllUsers(users);
 };
 
-module.exports = { getAllUsers, getUserById, addUser, deleteUser }
+function login(user) {
+    console.log(user);
+    const { username, password } = user;
+    const userSelected = getAllUsers().find(val => val.username === username);
+    console.log(userSelected);
+    if (!userSelected) return res.status(401).json({ error: "Invalid credentials" });
+
+    const isValid = bcrypt.compareSync(password, userSelected.password);
+    if (!isValid) return res.status(401).json({ error: "Invalid credentials" });
+
+    return jwt.sign({ username, role: userSelected.role }, SECRET_KEY, { expiresIn: "1h" });
+}
+
+module.exports = { getAllUsers, getUserById, addUser, deleteUser, login }

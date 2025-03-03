@@ -2,11 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const bookService = require('./bookService.js');
-const bookRouter = express.Router();
+const router = express.Router();
 const middleware = require('../middleware.js');
 const authorValidator = require('./authorValidator.js');
 const bookValidator = require('./bookValidator.js');
-const authenticate = require('../users/authMiddleware.js');
+const { authenticate } = require('../users/authMiddleware.js');
 
 /**
  * @swagger
@@ -17,7 +17,7 @@ const authenticate = require('../users/authMiddleware.js');
  *       200:
  *         description: A list of books.
  */
-bookRouter.get('/',
+router.get('/',
     (req, res) => {
         res.json(bookService.getAllBooks())
     });
@@ -41,8 +41,8 @@ bookRouter.get('/',
 *       500:
 *         description: Server error.
 */
-bookRouter.get('/:id', authenticate,
-    middleware.validatorHandler({ paramSchema: bookValidator.bookIdValidator }),
+router.get('/:id', [authenticate,
+    middleware.validatorHandler({ paramSchema: bookValidator.bookIdValidator })],
     (req, res) => {
         res.json(bookService.getBookById(req.params.id))
     });
@@ -66,8 +66,8 @@ bookRouter.get('/:id', authenticate,
 *       500:
 *         description: Server error.
 */
-bookRouter.get('/author/:authorName', authenticate,
-    middleware.validatorHandler({ paramSchema: authorValidator.authorNameValidator }),
+router.get('/author/:authorName', [authenticate,
+    middleware.validatorHandler({ paramSchema: authorValidator.authorNameValidator })],
     (req, res) => {
         res.json(bookService.getAllBooksByAuthor(req.params.authorName))
     });
@@ -91,10 +91,10 @@ bookRouter.get('/author/:authorName', authenticate,
 *       500:
 *         description: Server error.
 */
-bookRouter.post('/',
-    authenticate,
-    jsonParser,
-    middleware.validatorHandler({ bodySchema: bookValidator.bookBodyValidator }),
+router.post('/',
+    [authenticate,
+        jsonParser,
+        middleware.validatorHandler({ bodySchema: bookValidator.bookBodyValidator })],
     (req, res) => {
         bookService.addBook(req.body);
         res.status(200).send('Added');
@@ -125,10 +125,10 @@ bookRouter.post('/',
 *       500:
 *         description: Server error.
 */
-bookRouter.put('/',
-    authenticate,
-    jsonParser,
-    middleware.validatorHandler({ bodySchema: bookValidator.bookBodyValidator }),
+router.put('/',
+    [authenticate,
+        jsonParser,
+        middleware.validatorHandler({ bodySchema: bookValidator.bookBodyValidator })],
     (req, res) => {
         bookService.updateBook(req.body);
         res.status(200).send('Updated');
@@ -153,12 +153,12 @@ bookRouter.put('/',
 *       500:
 *         description: Server error.
 */
-bookRouter.delete('/:id',
-    authenticate,
-    middleware.validatorHandler({ paramSchema: bookValidator.bookIdValidator }),
+router.delete('/:id',
+    [authenticate,
+        middleware.validatorHandler({ paramSchema: bookValidator.bookIdValidator })],
     (req, res) => {
         bookService.deleteBook(req.params.id);
         res.status(202).send('Deleted');
     });
 
-module.exports = bookRouter
+module.exports = { bookRouter: router }

@@ -10,8 +10,8 @@
 // с файлами, должны быть в отдельных файлах и один server (index) айл который в себе соберает всё.
 
 const express = require('express');
-const bookRouter = require('./books/bookRouter.js');
-const userRouter = require('./users/userRouter.js');
+const { bookRouter } = require('./books/bookRouter.js');
+const { userRouter } = require('./users/userRouter.js');
 const app = express();
 const middleware = require('./middleware.js');
 const swaggerUi = require("swagger-ui-express");

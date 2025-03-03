@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const userService = require('./userService.js');
-const userRouter = express.Router();
+const router = express.Router();
 const middleware = require('../middleware.js');
 const userValidator = require('./userValidator.js');
 const { authenticate, authorize } = require('./authMiddleware.js');
@@ -16,9 +16,9 @@ const { authenticate, authorize } = require('./authMiddleware.js');
  *       200:
  *         description: A list of users.
  */
-userRouter.get('/',
-    authenticate,
-    authorize('admin'),
+router.get('/',
+    [authenticate,
+        authorize('admin')],
     (req, res) => {
         res.json(userService.getAllUsers())
     });
@@ -42,10 +42,10 @@ userRouter.get('/',
 *       500:
 *         description: Server error.
 */
-userRouter.get('/:id',
-    authenticate,
-    authorize('admin'),
-    middleware.validatorHandler({ paramSchema: userValidator.userIdValidator }),
+router.get('/:id',
+    [authenticate,
+        authorize('admin'),
+        middleware.validatorHandler({ paramSchema: userValidator.userIdValidator })],
     (req, res) => {
         res.json(userService.getUserById(req.params.id))
     });
@@ -69,9 +69,9 @@ userRouter.get('/:id',
 *       500:
 *         description: Server error.
 */
-userRouter.post('/',
-    jsonParser,
-    middleware.validatorHandler({ bodySchema: userValidator.userBodyValidator }),
+router.post('/',
+    [jsonParser,
+        middleware.validatorHandler({ bodySchema: userValidator.userBodyValidator })],
     (req, res) => {
         const token = userService.addUser(req.body);
         res.status(200).send({ message: 'User added', token });
@@ -96,13 +96,21 @@ userRouter.post('/',
 *       500:
 *         description: Server error.
 */
-userRouter.delete('/:id',
-    authenticate,
-    authorize('admin'),
-    middleware.validatorHandler({ paramSchema: userValidator.userIdValidator }),
+router.delete('/:id',
+    [authenticate,
+        authorize('admin'),
+        middleware.validatorHandler({ paramSchema: userValidator.userIdValidator })],
     (req, res) => {
         userService.deleteUser(req.params.id);
         res.status(202).send('Deleted');
     });
 
-module.exports = userRouter
+
+router.post('/login',
+    [jsonParser,
+        middleware.validatorHandler({ bodySchema: userValidator.userLoginValidator })],
+    (req, res) => {
+        const token = userService.login(req.body);
+        res.status(200).send({ message: 'User loged in', token });
+    });
+module.exports = { userRouter: router }
