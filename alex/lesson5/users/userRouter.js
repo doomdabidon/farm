@@ -17,8 +17,7 @@ const { authenticate, authorize } = require('./authMiddleware.js');
  *         description: A list of users.
  */
 router.get('/',
-    [authenticate,
-        authorize('admin')],
+    [authenticate, authorize('admin')],
     (req, res) => {
         res.json(userService.getAllUsers())
     });

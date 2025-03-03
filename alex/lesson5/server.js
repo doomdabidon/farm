@@ -17,11 +17,14 @@ const middleware = require('./middleware.js');
 const swaggerUi = require("swagger-ui-express");
 const YAML = require('yamljs');
 const path = require('path');
+const tokenRateLimit = require('./users/rateLimitMiddleware.js');
+const { default: rateLimit } = require('express-rate-limit');
 
 app.use('/books', bookRouter);
 app.use('/users', userRouter);
 const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(rateLimit(tokenRateLimit));
 app.use(middleware.errorHandler);
 
 const server = app.listen(8081, () => {

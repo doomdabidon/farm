@@ -17,7 +17,7 @@ const { authenticate } = require('../users/authMiddleware.js');
  *       200:
  *         description: A list of books.
  */
-router.get('/',
+router.get('/', authenticate,
     (req, res) => {
         res.json(bookService.getAllBooks())
     });
