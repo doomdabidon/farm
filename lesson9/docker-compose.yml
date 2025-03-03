@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  postgresdb:
+    image: postgres:17.1
+    env_file: .env
+    environment:
+      - POSTGRES_USER=$POSTGRESDB_USER
+      - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - POSTGRES_DB=$POSTGRESDB_DATABASE
+    ports:
+      - ${POSTGRESDB_LOCAL_PORT}:${POSTGRESDB_DOCKER_PORT}
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", $POSTGRESDB_DATABASE, "-U", $POSTGRESDB_USER]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  app:
+    build:
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - ${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}
+    environment:
+      - POSTGRESDB_HOST=$POSTGRESDB_HOST
+      - POSTGRESDB_USER=$POSTGRESDB_USER
+      - POSTGRESDB_ROOT_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - POSTGRESDB_DATABASE=$POSTGRESDB_DATABASE
+      - POSTGRESDB_DOCKER_PORT=$POSTGRESDB_DOCKER_PORT
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+
+volumes: 
+  db:
