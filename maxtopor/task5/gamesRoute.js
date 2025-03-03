@@ -2,7 +2,17 @@ const express = require('express')
 const gamesRepository = require('./storage/dbApi')
 const gamesRouter = express.Router()
 const bodyParser = require('body-parser')
-const { payloadValidator, errorHandler } = require('./middleware')
+const rateLimit = require('express-rate-limit');
+const { payloadValidator, errorHandler, authenticationHandler, authorizationHandler } = require('./middleware')
+
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    limit: 5, 
+    keyGenerator: (req, res) => req.user.username
+})
+
+
+gamesRouter.use(authenticationHandler, limiter)
 
 gamesRouter.get("/", async (req, res) => {
     const games = await gamesRepository.readGames()
@@ -19,7 +29,7 @@ gamesRouter.get("/:id/publishers", async (req, res, next) => {
     res.json(game.publishers)
 })
 
-gamesRouter.post("/", [bodyParser.json(), payloadValidator], async (req, res, next) => {
+gamesRouter.post("/", [bodyParser.json(), payloadValidator, authorizationHandler("ADMIN")], async (req, res, next) => {
     await gamesRepository.saveGame(req.body)
     res.end("posted")
 })
