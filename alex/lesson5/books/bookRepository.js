@@ -1,7 +1,7 @@
 const fsExtra = require('fs-extra');
-const booksPath = __dirname + '/db/book.json';
-const books = require('./db/book.json');
-const authors = require('./db/authors.json');
+const booksPath = __dirname + '../db/book.json';
+const books = require('../db/book.json');
+const authors = require('../db/authors.json');
 
 function writeJson(path, data) {
     fsExtra.writeJSON(path, data, (error) => {

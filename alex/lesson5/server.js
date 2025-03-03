@@ -10,14 +10,16 @@
 // с файлами, должны быть в отдельных файлах и один server (index) айл который в себе соберает всё.
 
 const express = require('express');
-const router = require('./bookRouter.js');
+const bookRouter = require('./books/bookRouter.js');
+const userRouter = require('./users/userRouter.js');
 const app = express();
 const middleware = require('./middleware.js');
 const swaggerUi = require("swagger-ui-express");
 const YAML = require('yamljs');
 const path = require('path');
 
-app.use('/books', router);
+app.use('/books', bookRouter);
+app.use('/users', userRouter);
 const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(middleware.errorHandler);

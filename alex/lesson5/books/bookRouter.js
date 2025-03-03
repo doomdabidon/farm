@@ -2,10 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const bookService = require('./bookService.js');
-const router = express.Router();
-const middleware = require('./middleware.js');
+const bookRouter = express.Router();
+const middleware = require('../middleware.js');
 const authorValidator = require('./authorValidator.js');
 const bookValidator = require('./bookValidator.js');
+const authenticate = require('../users/authMiddleware.js');
 
 /**
  * @swagger
@@ -16,7 +17,7 @@ const bookValidator = require('./bookValidator.js');
  *       200:
  *         description: A list of books.
  */
-router.get('/',
+bookRouter.get('/',
     (req, res) => {
         res.json(bookService.getAllBooks())
     });
@@ -40,7 +41,7 @@ router.get('/',
 *       500:
 *         description: Server error.
 */
-router.get('/:id',
+bookRouter.get('/:id', authenticate,
     middleware.validatorHandler({ paramSchema: bookValidator.bookIdValidator }),
     (req, res) => {
         res.json(bookService.getBookById(req.params.id))
@@ -65,7 +66,7 @@ router.get('/:id',
 *       500:
 *         description: Server error.
 */
-router.get('/author/:authorName',
+bookRouter.get('/author/:authorName', authenticate,
     middleware.validatorHandler({ paramSchema: authorValidator.authorNameValidator }),
     (req, res) => {
         res.json(bookService.getAllBooksByAuthor(req.params.authorName))
@@ -90,7 +91,8 @@ router.get('/author/:authorName',
 *       500:
 *         description: Server error.
 */
-router.post('/',
+bookRouter.post('/',
+    authenticate,
     jsonParser,
     middleware.validatorHandler({ bodySchema: bookValidator.bookBodyValidator }),
     (req, res) => {
@@ -123,7 +125,8 @@ router.post('/',
 *       500:
 *         description: Server error.
 */
-router.put('/',
+bookRouter.put('/',
+    authenticate,
     jsonParser,
     middleware.validatorHandler({ bodySchema: bookValidator.bookBodyValidator }),
     (req, res) => {
@@ -150,11 +153,12 @@ router.put('/',
 *       500:
 *         description: Server error.
 */
-router.delete('/:id',
+bookRouter.delete('/:id',
+    authenticate,
     middleware.validatorHandler({ paramSchema: bookValidator.bookIdValidator }),
     (req, res) => {
         bookService.deleteBook(req.params.id);
         res.status(202).send('Deleted');
     });
 
-module.exports = router
+module.exports = bookRouter

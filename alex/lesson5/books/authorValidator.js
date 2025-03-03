@@ -6,4 +6,4 @@ const authorNameValidator = z.object({
         .max(60, "The author name cannot be more then 60 symbols")
 });
 
-module.exports = { authorBodyValidator, authorNameValidator }
+module.exports = authorNameValidator
