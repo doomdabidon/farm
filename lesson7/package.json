@@ -1,0 +1,23 @@
+{
+  "name": "docker_farm",
+  "version": "1.0.0",
+  "main": "./src/server.js",
+  "license": "MIT",
+  "scripts": {
+    "server": "node ./src/server.js",
+    "build": "tsc",
+    "docker": "npm run build & docker compose up"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.3",
+    "typeorm": "^0.3.21"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.9",
+    "typescript": "^5.8.2"
+  }
+}
