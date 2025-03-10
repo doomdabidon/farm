@@ -1,14 +1,16 @@
-const { AuthorizationError } = require("./authorizationService")
-const jwtUtils = require("./jwtUtils")
+import { NextFunction } from "express"
+import { AuthorizationError } from "../security/authorizationService"
+import { decodeJwt } from "./jwtUtils"
+import { Role } from "../security/role"
 
-class ValidationError extends Error {
-    constructor(message) {
+export class ValidationError extends Error {
+    constructor(message: string) {
         super(message)
         this.name = "ValidationError"
     }
 }
 
-function authenticationHandler(req, res, next) {
+export function authenticationHandler(req: any, res: any, next: NextFunction) {
     const token = req.header('Authorization')?.split(' ')[1]
 
     if (!token) {
@@ -16,7 +18,7 @@ function authenticationHandler(req, res, next) {
     }
 
     try {
-        const decoded = jwtUtils.decodeJwt(token)
+        const decoded = decodeJwt(token)
         console.log("Decoded user", decoded)
 
         req.user = decoded
@@ -26,19 +28,19 @@ function authenticationHandler(req, res, next) {
     }
 }
 
-function authorizationHandler(role) {
-    return (req, res, next) => {
-        console.log(req.user, role)
+export function authorizationHandler(role: string) {
+    return (req: any, res: any, next: NextFunction) => {
+        const roles: Role[] = req.user.roles
 
-        if (!req.user.roles.includes(role)) {
+        if (!roles.find(r => r.name === role)) {
             return res.status(403).json({ error: "Forbidden" })
         }
-        
+
         next()
     }
 }
 
-function errorHandler(err, req, res, next) {
+export function errorHandler(err: Error, req: any, res: any, next: NextFunction): void {
     if (err instanceof ValidationError) {
         res.status(500).json({
             message: err.message,
@@ -53,11 +55,12 @@ function errorHandler(err, req, res, next) {
     }
 
     res.status(500).json({
-        message: err.message
+        message: err.message,
+        trace: err.stack
     })
 }
 
-function payloadValidator(req, res, next) {
+export function payloadValidator(req: any, res: any, next: NextFunction): void {
     const game = req.body
 
     if (!game.name) {
@@ -65,11 +68,4 @@ function payloadValidator(req, res, next) {
     }
 
     next()
-}
-
-module.exports = {
-    errorHandler,
-    payloadValidator,
-    authenticationHandler,
-    authorizationHandler
 }
