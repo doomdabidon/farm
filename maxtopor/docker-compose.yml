@@ -6,3 +6,30 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:3000
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:17.4
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./task5/scripts:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_USER: maxtopor
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: games_db
+      POSTGRESDB_HOST: "db"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", $POSTGRES_DB, "-U", $POSTGRES_USER ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  pgadmin:
+    image: dpage/pgadmin4:9.1
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@example.com
+      PGADMIN_DEFAULT_PASSWORD: 1234

@@ -1,16 +1,17 @@
-const express = require('express')
+import express from 'express'
+import bodyParser from 'body-parser'
+import authService from '../security/authorizationService'
+import { generateJwt } from './jwtUtils'
+import { errorHandler } from './middleware'
+
 const usersRouter = express.Router()
-const bodyParser = require('body-parser')
-const authService = require('./authorizationService')
-const jwtUtils = require('./jwtUtils')
-const { errorHandler } = require('./middleware')
 
 usersRouter.use(bodyParser.json())
 
 usersRouter.get("/authenticate", async (req, res, next) => {
     const { username, password } = req.body
     const authorization = await authService.authorize(username, password)
-    const jwt = jwtUtils.generateJwt(authorization.username, authorization.roles)
+    const jwt = generateJwt(authorization.username, authorization.roles)
 
     res.json({ token: jwt })
 })
@@ -18,13 +19,13 @@ usersRouter.get("/authenticate", async (req, res, next) => {
 usersRouter.post("/register", async (req, res, next) => {
     const { username, password } = req.body
     const authorization = await authService.register(username, password)
-    const jwt = jwtUtils.generateJwt(authorization.username, authorization.roles)
+    const jwt = generateJwt(authorization.username, authorization.roles)
 
     res.json({ token: jwt })
 })
 
 usersRouter.use(errorHandler)
 
-module.exports = {
+export {
     usersRouter
 }
