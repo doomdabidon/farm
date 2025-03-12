@@ -9,6 +9,10 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.5.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
@@ -28,6 +32,7 @@
     "save": "^2.9.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "typescript": "^5.8.2",
     "yamljs": "^0.3.0",
     "zod": "^3.24.2"
   },

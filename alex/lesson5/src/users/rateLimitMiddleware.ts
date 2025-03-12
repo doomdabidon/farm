@@ -3,11 +3,9 @@ const defaultTokenRateLimit = {
     max: 3,
 };
 
-const tokenRateLimit = {
+export const tokenRateLimit = {
     ...defaultTokenRateLimit,
-    keyGenerator: (req, res) => {
+    keyGenerator: (req: any, res: any) => {
         return req.user.username;
     }
 };
-
-module.exports = tokenRateLimit

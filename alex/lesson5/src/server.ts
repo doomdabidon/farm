@@ -9,24 +9,34 @@
 // 6) модули сервиса такие как роутинг, валидация, мидвары и сервисы для работы например 
 // с файлами, должны быть в отдельных файлах и один server (index) айл который в себе соберает всё.
 
-const express = require('express');
-const { bookRouter } = require('./books/bookRouter.js');
-const { userRouter } = require('./users/userRouter.js');
+import express from 'express';
 const app = express();
-const middleware = require('./middleware.js');
-const swaggerUi = require("swagger-ui-express");
-const YAML = require('yamljs');
-const path = require('path');
-const tokenRateLimit = require('./users/rateLimitMiddleware.js');
-const { default: rateLimit } = require('express-rate-limit');
+import bodyParser from 'body-parser';
+const jsonParser = bodyParser.json();
+import swaggerUi from "swagger-ui-express";
+import YAML from 'yamljs';
+import path from 'path';
+import { default as rateLimit } from 'express-rate-limit';
+import { bookRouter } from './books/bookRouter';
+import { userRouter } from './users/userRouter';
+import { tokenRateLimit } from './users/rateLimitMiddleware';
+import { errorHandler } from './middleware';
+import "reflect-metadata";
+import { AppDataSource } from './db/data-source';
 
-
+app.use(jsonParser);
 app.use('/books', bookRouter);
 app.use('/users', userRouter);
+
 const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(rateLimit(tokenRateLimit));
-app.use(middleware.errorHandler);
+app.use(errorHandler);
+
+AppDataSource.initialize()
+    .then(() => {
+    })
+    .catch((error) => console.log(error))
 
 const server = app.listen(8081, () => {
     console.log('Express App running at http://localhost:8081/');

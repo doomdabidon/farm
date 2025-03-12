@@ -1,7 +1,8 @@
-const ValidationError = require("./validationError.js");
+import { UserNotFoundError } from "./users/userNotFoundError";
+import { ValidationError } from "./validationError";
 
-const validatorHandler = ({ querySchema, paramSchema, bodySchema }) => {
-    return (req, res, next) => {
+export const validatorHandler = ({ querySchema, paramSchema, bodySchema }: any) => {
+    return (req: { query: any; params: any; body: any; }, res: any, next: () => void) => {
         if (querySchema) {
             const validationResult = querySchema.safeParse(req.query)
             if (!validationResult.success) {
@@ -27,12 +28,13 @@ const validatorHandler = ({ querySchema, paramSchema, bodySchema }) => {
     };
 }
 
-const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err: Error, req: any, res: any, next: any) => {
     if (err instanceof ValidationError) {
         res.status(400).json({ error: err.message });
     }
-
-    res.status(500).json({ error: "Internal Server Error" });
+    if (err instanceof UserNotFoundError) {
+        res.status(404).json({ error: err.message });
+    }
+    res.status(500).json({ error: "Internal Server Error", err });
 };
 
-module.exports = { errorHandler, validatorHandler }
