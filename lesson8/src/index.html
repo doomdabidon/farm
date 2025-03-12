@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        #messages {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            background: #fff;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .own-message {
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>WebSocket Chat</h1>
+        <label for="token">JWT Token:</label>
+        <input type="text" id="token" placeholder="Enter JWT token">
+        <button onclick="connectSocket()">Connect to WebSocket</button>
+
+        <h2>Chat</h2>
+        <ul id="messages"></ul>
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        let socket;
+        let user = null;
+
+        function connectSocket() {
+            const token = document.getElementById("token").value;
+            if (!token) {
+                alert("Please enter a valid JWT token");
+                return;
+            }
+
+            socket = io("http://localhost:8080", {
+                path: "/custom/socket",
+                auth: { token: token }
+            });
+
+            socket.on("connect", () => {
+                console.log("Connected to WebSocket server");
+            });
+
+            socket.on("message", (data) => {
+                const li = document.createElement("li");
+                li.textContent = `${data.user?.name || "Unknown"}: ${data.message}`;
+                if (data.user?.id === user?.id) {
+                    li.classList.add("own-message");
+                }
+                document.getElementById("messages").appendChild(li);
+            });
+
+            socket.on("connect_error", (err) => {
+                console.error("Connection failed:", err.message);
+                alert("WebSocket Connection Error: " + err.message);
+            });
+
+            socket.on("authenticated", (userData) => {
+                user = userData;
+                console.log("Authenticated as:", user);
+            });
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            socket.emit("message", message);
+            messageInput.value = "";
+        }
+    </script>
+
+</body>
+</html>

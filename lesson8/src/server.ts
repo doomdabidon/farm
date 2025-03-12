@@ -1,14 +1,60 @@
+import http from 'http';
+import jwt from 'jsonwebtoken';
+import { Server, Socket } from 'socket.io';
 import express, { Request, Response } from 'express';
 import { DataSource, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany } from "typeorm";
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+const path = require('path');
 
 dotenv.config();
 
-
-dotenv.config();
 const app = express();
 app.use(bodyParser.json());      
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    path: "/custom/socket",
+    cors: {
+        origin: "*", // Allow all origins (Modify this for production security)
+        methods: ["GET", "POST"]
+    }
+});
+
+interface AuthenticatedSocket extends Socket {
+    user?: any; // Add the `user` property dynamically
+}
+
+// WebSocket authentication middleware
+io.use((socket: AuthenticatedSocket, next) => {
+    const token = socket.handshake.auth?.token;
+    if (!token) {
+        return next(new Error("Authentication error: No token provided"));
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'qwertyuiopasdfghjklzxcvbnm123456');
+        socket.user = decoded; // Attach user info to socket object
+        next();
+    } catch (error) {
+        return next(new Error("Authentication error: Invalid token"));
+    }
+});
+
+// Handle WebSocket connections
+io.on("connection", (socket: AuthenticatedSocket) => {
+    console.log(`New client connected: ${socket.id}, User: ${JSON.stringify(socket.user)}`);
+
+    socket.on("message", (data) => {
+        console.log("Received message:", data);
+        io.emit("message", { user: socket.user, message: data });
+    });
+
+    socket.on("disconnect", () => {
+        console.log(`Client disconnected: ${socket.id}`);
+    });
+});
 
 @Entity()
 class Farm {
@@ -125,6 +171,11 @@ AppDataSource.initialize()
 
 const farmRepository = () => AppDataSource.getRepository("Farm");
 
+
+app.get('/', function (req, res) {
+   res.sendFile(path.join(__dirname, 'index.html'));
+})
+
 app.post("/transaction", async (req, res) => {
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.connect();
@@ -193,6 +244,6 @@ app.delete("/farms/:id", async (req: Request, res: Response): Promise<any> => {
     res.status(204).send();
 });
 
-app.listen(8080, function () {
+server.listen(8080, function () {
    console.log(`Express App running at http://127.0.0.1:${process.env.NODE_DOCKER_PORT}/`);
 });
