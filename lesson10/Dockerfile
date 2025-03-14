@@ -10,6 +10,6 @@ COPY ./src src
 
 RUN npm run build
 
-# COPY ./dist/src src
+COPY ./src/index.html dist/src
 
 CMD ["node", "./dist/src/server.js"]

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES6",  // Output JavaScript code to ES6
+    "module": "commonjs",  // Use CommonJS module system (for Node.js)
+    "outDir": "./dist/src",  // Output compiled JS files to the dist folder
+    "rootDir": "./src",  // Root directory of your TypeScript files
+    "lib": ["es6"],             // Include the necessary libraries
+    "experimentalDecorators": true,    // Enable support for decorators
+    "emitDecoratorMetadata": true,     // Required for TypeORM
+    "strict": true,                    // Enforces strict typing, optional but recommended
+    "esModuleInterop": true,           // Ensures compatibility with CommonJS modules
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*.ts"  // Include all .ts files under the /src folder
+  ],
+  "exclude": [
+    "node_modules"  // Exclude the node_modules folder
+  ]
+}
